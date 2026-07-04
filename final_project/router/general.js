@@ -20,7 +20,7 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  if (books.hasOwn(req.params.isbn)){
+  if (Object.hasOwn(books, req.params.isbn)){
     return res.status(200).json(books[req.params.isbn]);
   }
   
@@ -48,8 +48,9 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  if (Object.hasOwn(books, req.params.isbn)){
+    return res.status(200).json(books[req.params.isbn].reviews);
+  }
 });
 
 module.exports.general = public_users;
