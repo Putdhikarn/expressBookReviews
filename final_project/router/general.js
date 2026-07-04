@@ -7,7 +7,25 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const bd = req.body;
+  if(bd.username == null || bd.username == ""){
+    return res.status(400).json({message: "Error: Missing Username."});
+  }
+  if(bd.password == null || bd.password == ""){
+    return res.status(400).json({message: "Error: Missing Password."});
+  }
+  let inUse = false;
+  users.forEach((u) => {
+    inUse = (u.username == bd.username);
+  });
+  if (inUse){
+    return res.status(400).json({message: "Error: Username already in use."});
+  }
+  users.push({
+    username : bd.username,
+    password : bd.password
+  })
+  return res.status(200).json({message: "Registered user: " + bd.username});
 });
 
 // Get the book list available in the shop
