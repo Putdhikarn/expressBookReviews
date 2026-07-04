@@ -46,6 +46,16 @@ const fetchBookDetail = (async (isbn) => {
   return detail;
 });
 
+const fetchBookDetailAuthor = (async (aut) => {
+  let bdt = [];
+  for (const k of Object.keys(books)){
+    if (books[k].author == aut) {
+      bdt.push(books[k]);
+    }
+  }
+  return bdt;
+});
+
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
   try{
@@ -61,12 +71,17 @@ public_users.get('/isbn/:isbn', async function (req, res) {
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  let aut = req.params.author;
-  for (const k of Object.keys(books)){
-    if (books[k].author == aut){
-      return res.status(200).json(books[k]);
+public_users.get('/author/:author', async function (req, res) {
+  try{
+    const dt = await fetchBookDetailAuthor(req.params.author);
+    if (dt){
+      return res.status(200).json(dt);
+    } else {
+      return res.status(404).json({messsage: "Can't find book with that Author."});
     }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({message: "Error: Server can't get book detail."});
   }
 });
 
