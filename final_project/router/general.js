@@ -24,94 +24,108 @@ public_users.post("/register", (req,res) => {
     username : bd.username,
     password : bd.password
   })
-  return res.status(200).json({message: "Registered user: " + bd.username});
-});
-
-const fetchbook = (async () => {
-  return books;
+  return res.status(200).json({message: "Success, Registered user: " + bd.username});
 });
 
 // Get the book list available in the shop
 public_users.get('/', async function (req, res) {
-  try {
-    const bk = await fetchbook();
+  const fetchBooks = new Promise((resolve, reject) => {
+    // would always resolve since we using a simulated database.
+    const bk = books;
+    if (bk){
+      resolve(bk);
+    } else{
+      reject({message: "Error: Server can't get book list."});
+    }
+  })
+  fetchBooks
+  .then((bk) => {
     return res.status(200).json(bk);
-  } catch (err){
-    return res.status(500).json({message: "Error: Server can't get book list."});
-  }
-});
-
-const fetchBookDetail = (async (isbn) => {
-  let detail = books[isbn];
-  return detail;
-});
-
-const fetchBookDetailAuthor = (async (aut) => {
-  let bdt = [];
-  for (const k of Object.keys(books)){
-    if (books[k].author == aut) {
-      bdt.push(books[k]);
-    }
-  }
-  return bdt;
-});
-
-const fetchBookTitle = (async (ti) => {
-  for (const k of Object.keys(books)){
-    if (books[k].title == ti) {
-      return books[k];
-    }
-  }
-  return null;
+  }).catch((err) =>{
+    return res.status(500).json(err);
+  });
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
-  try{
-    const dt = await fetchBookDetail(req.params.isbn);
+  const fetchBooksDetail = new Promise((resolve, reject) => {
+    const dt = books[req.params.isbn];
     if (dt){
-      return res.status(200).json(dt);
-    } else {
-      return res.status(404).json({messsage: "Can't find book with that ISBN."});
+      resolve(dt);
+    } else{
+      reject({message: "Error: Server can't get book detail."});
     }
-  } catch (err) {
-    return res.status(500).json({message: "Error: Server can't get book detail."});
-  }
- });
-  
+  })
+  fetchBooksDetail
+  .then((bk) => {
+    return res.status(200).json(bk);
+  }).catch((err) =>{
+    return res.status(500).json(err);
+  });
+});
+
 // Get book details based on author
 public_users.get('/author/:author', async function (req, res) {
-  try{
-    const dt = await fetchBookDetailAuthor(req.params.author);
-    if (dt){
-      return res.status(200).json(dt);
-    } else {
-      return res.status(404).json({messsage: "Can't find book with that Author."});
+  const fetchBooksAuthor = new Promise((resolve, reject) => {
+    let bdt = [];
+    for (const k of Object.keys(books)){
+      if (books[k].author == req.params.author) {
+        bdt.push(books[k]);
+      }
     }
-  } catch (err) {
-    return res.status(500).json({message: "Error: Server can't get book detail."});
-  }
+    if (bdt){
+      resolve(bdt);
+    } else{
+      reject({message: "Error: Server can't get book detail."});
+    }
+  })
+  fetchBooksAuthor
+  .then((bk) => {
+    return res.status(200).json(bk);
+  }).catch((err) =>{
+    return res.status(500).json(err);
+  });
 });
 
 // Get all books based on title
 public_users.get('/title/:title', async function (req, res) {
-  try{
-    const dt = await fetchBookTitle(req.params.title);
-    if (dt){
-      return res.status(200).json(dt);
-    } else {
-      return res.status(404).json({messsage: "Can't find book with that Title."});
+  const fetchBooksTitle = new Promise((resolve, reject) => {
+    let bdt;
+    for (const k of Object.keys(books)){
+      if (books[k].title == req.params.title) {
+        bdt = books[k];
+      }
     }
-  } catch (err) {
-    return res.status(500).json({message: "Error: Server can't get book detail."});
-  }
+    if (bdt){
+      resolve(bdt);
+    } else{
+      reject({message: "Error: Server can't get book detail."});
+    }
+  });
+  fetchBooksTitle
+  .then((bk) => {
+    return res.status(200).json(bk);
+  }).catch((err) =>{
+    return res.status(500).json(err);
+  });
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  if (Object.hasOwn(books, req.params.isbn)){
-    return res.status(200).json(books[req.params.isbn].reviews);
-  }
+  const fetchBookReview = new Promise((resolve, reject) => {
+    const rw = books[req.params.isbn].reviews;
+    if (rw){
+      resolve(rw);
+    } else{
+      reject({message: "Error: Server can't get book review."});
+    }
+  })
+  fetchBookReview
+  .then((bk) => {
+    return res.status(200).json(bk);
+  }).catch((err) =>{
+    return res.status(500).json(err);
+  });
 });
 
 module.exports.general = public_users;

@@ -45,7 +45,7 @@ regd_users.post("/login", (req,res) => {
     }
     const tk = jwt.sign(payload, "SEEECREEEET", {expiresIn:"1h"});
     return res.status(200).json({
-      message: "Login Success.",
+      message: "Login Success, User: " + bd.username,
       token:tk,
     });
   } else {
@@ -64,7 +64,12 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   }
   if (isValid(req.username)){
     books[req.params.isbn].reviews[req.username] = bd.review;
-    return res.status(200).json({message: "Added review from user: "+req.username + " review: " + bd.review});
+    return res.status(200).json({
+      message: "Success, Review Added.",
+      isbn:req.params.isbn,
+      by:req.username,
+      reviewbody:bd.review,
+    });
   } else {
     return res.status(403).json({message: "Error: Invalid or Expired Token."});
   }
@@ -74,7 +79,11 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   if (isValid(req.username)){
     if (books[req.params.isbn].reviews[req.username]){
       delete books[req.params.isbn].reviews[req.username];
-      return res.status(200).json({message: "Deleted review for user: "+req.username});
+      return res.status(200).json({
+        message: "Success, Review Deleted",
+        isbn:req.params.isbn,
+        by:req.username,
+      });
     } else {
       return res.status(400).json({message: "Error: No review to delete."});
     }
