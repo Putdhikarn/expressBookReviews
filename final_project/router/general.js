@@ -8,17 +8,16 @@ const public_users = express.Router();
 public_users.post("/register", (req,res) => {
   //Write your code here
   const bd = req.body;
+  if (bd == null){
+    return res.status(400).json({message: "Error: Missing request body."});
+  }
   if(bd.username == null || bd.username == ""){
     return res.status(400).json({message: "Error: Missing Username."});
   }
   if(bd.password == null || bd.password == ""){
     return res.status(400).json({message: "Error: Missing Password."});
   }
-  let inUse = false;
-  users.forEach((u) => {
-    inUse = (u.username == bd.username);
-  });
-  if (inUse){
+  if (isValid(bd.username)){
     return res.status(400).json({message: "Error: Username already in use."});
   }
   users.push({
