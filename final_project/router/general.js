@@ -28,26 +28,36 @@ public_users.post("/register", (req,res) => {
 });
 
 const fetchbook = (async () => {
-      return books;
+  return books;
 });
 
 // Get the book list available in the shop
 public_users.get('/', async function (req, res) {
   try {
     const bk = await fetchbook();
-    console.log(bk);
     return res.status(200).json(bk);
   } catch (err){
     return res.status(500).json({message: "Error: Server can't get book list."});
   }
 });
 
+const fetchBookDetail = (async (isbn) => {
+  let detail = books[isbn];
+  return detail;
+});
+
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  if (Object.hasOwn(books, req.params.isbn)){
-    return res.status(200).json(books[req.params.isbn]);
+public_users.get('/isbn/:isbn', async function (req, res) {
+  try{
+    const dt = await fetchBookDetail(req.params.isbn);
+    if (dt){
+      return res.status(200).json(dt);
+    } else {
+      return res.status(404).json({messsage: "Can't find book with that ISBN."});
+    }
+  } catch (err) {
+    return res.status(500).json({message: "Error: Server can't get book detail."});
   }
-  
  });
   
 // Get book details based on author
