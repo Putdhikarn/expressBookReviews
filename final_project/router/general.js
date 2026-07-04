@@ -27,16 +27,23 @@ public_users.post("/register", (req,res) => {
   return res.status(200).json({message: "Registered user: " + bd.username});
 });
 
+const fetchbook = (async () => {
+      return books;
+});
+
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  let bk = books
-  return res.status(200).json(bk);
+public_users.get('/', async function (req, res) {
+  try {
+    const bk = await fetchbook();
+    console.log(bk);
+    return res.status(200).json(bk);
+  } catch (err){
+    return res.status(500).json({message: "Error: Server can't get book list."});
+  }
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
   if (Object.hasOwn(books, req.params.isbn)){
     return res.status(200).json(books[req.params.isbn]);
   }
