@@ -70,6 +70,19 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   }
 });
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  if (isValid(req.username)){
+    if (books[req.params.isbn].reviews[req.username]){
+      delete books[req.params.isbn].reviews[req.username];
+      return res.status(200).json({message: "Deleted review for user: "+req.username});
+    } else {
+      return res.status(400).json({message: "Error: No review to delete."});
+    }
+  } else {
+    return res.status(403).json({message: "Error: Invalid or Expired Token."});
+  }
+});
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
