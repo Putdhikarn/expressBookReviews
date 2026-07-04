@@ -55,8 +55,19 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const bd = req.body;
+  if (bd == null){
+    return res.status(400).json({message: "Error: Missing request body."});
+  }
+  if (bd.review == null || bd.review == ""){
+    return res.status(400).json({message: "Error: Missing review messages."});
+  }
+  if (isValid(req.username)){
+    books[req.params.isbn].reviews[req.username] = bd.review;
+    return res.status(200).json({message: "Added review from user: "+req.username + " review: " + bd.review});
+  } else {
+    return res.status(403).json({message: "Error: Invalid or Expired Token."});
+  }
 });
 
 module.exports.authenticated = regd_users;
