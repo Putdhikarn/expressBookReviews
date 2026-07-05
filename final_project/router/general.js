@@ -32,10 +32,11 @@ public_users.get('/', async function (req, res) {
   try{
     // to simulate a external database access
     const bk = await axios.get("http://localhost:5000/dbacc/books");
+    // validate if we actually got the book lists.
     if (bk.data){
       return res.status(200).json(bk.data);
     } else {
-      return res.status(404).json({message: "Error: No books to fetch."});
+      return res.status(404).json({message: "Error: Fetched book list contain no book."});
     }
   } catch (err){
     console.log(err);
@@ -48,6 +49,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
   try{
     // to simulate a external database access
     const bk = await axios.get("http://localhost:5000/dbacc/book/isbn/" + req.params.isbn);
+    // check if we actually got the book with that ISBN
     if (bk.data){
       return res.status(200).json(bk.data);
     } else {
@@ -64,6 +66,7 @@ public_users.get('/author/:author', async function (req, res) {
   try{
     // to simulate a external database access
     const bk = await axios.get("http://localhost:5000/dbacc/book/author/" + req.params.author);
+    // check if we actually got the book(s) with that Author
     if (bk.data){
       return res.status(200).json(bk.data);
     } else {
@@ -80,6 +83,7 @@ public_users.get('/title/:title', async function (req, res) {
   try{
     // to simulate a external database access
     const bk = await axios.get("http://localhost:5000/dbacc/book/title/" + req.params.title);
+    // // check if we actually got the book with that title
     if (bk.data){
       return res.status(200).json(bk.data);
     } else {
@@ -96,10 +100,13 @@ public_users.get('/review/:isbn', async function (req, res) {
   try{
     // to simulate a external database access
     const bk = await axios.get("http://localhost:5000/dbacc/book/review/" + req.params.isbn);
+    // check if we actually got the review for the book with that ISBN
     if (bk.data){
+      // book found 
       return res.status(200).json(bk.data);
     } else {
-      return res.status(404).json({message: "Error: Can't fetch reviews for that books."});
+      // no book with that isbn
+      return res.status(404).json({message: "Error: Can't fetch reviews for the book with that ISBN number."});
     }
   } catch (err){
     console.log(err);

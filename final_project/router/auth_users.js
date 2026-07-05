@@ -66,9 +66,12 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     books[req.params.isbn].reviews[req.username] = bd.review;
     return res.status(200).json({
       message: "Success, Review Added.",
-      isbn:req.params.isbn,
-      by:req.username,
-      reviewbody:bd.review,
+      data:{
+        by:req.username,
+        isbn:req.params.isbn,
+        bookname:books[req.params.isbn].title,
+        reviewbody:bd.review,
+      },
     });
   } else {
     return res.status(403).json({message: "Error: Invalid or Expired Token."});
