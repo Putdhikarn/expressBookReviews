@@ -3,7 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
+const axios = require('axios');
 
 public_users.post("/register", (req,res) => {
   //Write your code here
@@ -29,103 +29,82 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/', async function (req, res) {
-  const fetchBooks = new Promise((resolve, reject) => {
-    // would always resolve since we using a simulated database.
-    const bk = books;
-    if (bk){
-      resolve(bk);
-    } else{
-      reject({message: "Error: Server can't get book list."});
+  try{
+    // to simulate a external database access
+    const bk = await axios.get("http://localhost:5000/dbacc/books");
+    if (bk.data){
+      return res.status(200).json(bk.data);
+    } else {
+      return res.status(404).json({message: "Error: No books to fetch."});
     }
-  })
-  fetchBooks
-  .then((bk) => {
-    return res.status(200).json(bk);
-  }).catch((err) =>{
-    return res.status(500).json(err);
-  });
+  } catch (err){
+    console.log(err);
+    return res.status(200).json({message: "Error: Server can't fetch book list."});
+  }
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', async function (req, res) {
-  const fetchBooksDetail = new Promise((resolve, reject) => {
-    const dt = books[req.params.isbn];
-    if (dt){
-      resolve(dt);
-    } else{
-      reject({message: "Error: Server can't get book detail."});
+  try{
+    // to simulate a external database access
+    const bk = await axios.get("http://localhost:5000/dbacc/book/isbn/" + req.params.isbn);
+    if (bk.data){
+      return res.status(200).json(bk.data);
+    } else {
+      return res.status(404).json({message: "Error: Can't fetch book with that ISBN."});
     }
-  })
-  fetchBooksDetail
-  .then((bk) => {
-    return res.status(200).json(bk);
-  }).catch((err) =>{
-    return res.status(500).json(err);
-  });
+  } catch (err){
+    console.log(err);
+    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+  }
 });
 
 // Get book details based on author
 public_users.get('/author/:author', async function (req, res) {
-  const fetchBooksAuthor = new Promise((resolve, reject) => {
-    let bdt = [];
-    for (const k of Object.keys(books)){
-      if (books[k].author == req.params.author) {
-        bdt.push(books[k]);
-      }
+  try{
+    // to simulate a external database access
+    const bk = await axios.get("http://localhost:5000/dbacc/book/author/" + req.params.author);
+    if (bk.data){
+      return res.status(200).json(bk.data);
+    } else {
+      return res.status(404).json({message: "Error: Can't fetch book with that Author."});
     }
-    if (bdt){
-      resolve(bdt);
-    } else{
-      reject({message: "Error: Server can't get book detail."});
-    }
-  })
-  fetchBooksAuthor
-  .then((bk) => {
-    return res.status(200).json(bk);
-  }).catch((err) =>{
-    return res.status(500).json(err);
-  });
+  } catch (err){
+    console.log(err);
+    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+  }
 });
 
 // Get all books based on title
 public_users.get('/title/:title', async function (req, res) {
-  const fetchBooksTitle = new Promise((resolve, reject) => {
-    let bdt;
-    for (const k of Object.keys(books)){
-      if (books[k].title == req.params.title) {
-        bdt = books[k];
-      }
+  try{
+    // to simulate a external database access
+    const bk = await axios.get("http://localhost:5000/dbacc/book/title/" + req.params.title);
+    if (bk.data){
+      return res.status(200).json(bk.data);
+    } else {
+      return res.status(404).json({message: "Error: Can't fetch book with that Title."});
     }
-    if (bdt){
-      resolve(bdt);
-    } else{
-      reject({message: "Error: Server can't get book detail."});
-    }
-  });
-  fetchBooksTitle
-  .then((bk) => {
-    return res.status(200).json(bk);
-  }).catch((err) =>{
-    return res.status(500).json(err);
-  });
+  } catch (err){
+    console.log(err);
+    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+  }
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  const fetchBookReview = new Promise((resolve, reject) => {
-    const rw = books[req.params.isbn].reviews;
-    if (rw){
-      resolve(rw);
-    } else{
-      reject({message: "Error: Server can't get book review."});
+public_users.get('/review/:isbn', async function (req, res) {
+  try{
+    // to simulate a external database access
+    const bk = await axios.get("http://localhost:5000/dbacc/book/review/" + req.params.isbn);
+    if (bk.data){
+      return res.status(200).json(bk.data);
+    } else {
+      return res.status(404).json({message: "Error: Can't fetch reviews for that books."});
     }
-  })
-  fetchBookReview
-  .then((bk) => {
-    return res.status(200).json(bk);
-  }).catch((err) =>{
-    return res.status(500).json(err);
-  });
+  } catch (err){
+    console.log(err);
+    return res.status(200).json({message: "Error: Server can't fetch book reviews."});
+  }
 });
 
 module.exports.general = public_users;
