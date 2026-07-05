@@ -40,7 +40,7 @@ public_users.get('/', async function (req, res) {
     }
   } catch (err){
     console.log(err);
-    return res.status(200).json({message: "Error: Server can't fetch book list."});
+    return res.status(500).json({message: "Error: Server can't fetch book list."});
   }
 });
 
@@ -57,7 +57,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
     }
   } catch (err){
     console.log(err);
-    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+    return res.status(500).json({message: "Error: Server can't fetch book detail."});
   }
 });
 
@@ -74,7 +74,7 @@ public_users.get('/author/:author', async function (req, res) {
     }
   } catch (err){
     console.log(err);
-    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+    return res.status(500).json({message: "Error: Server can't fetch book detail."});
   }
 });
 
@@ -91,7 +91,7 @@ public_users.get('/title/:title', async function (req, res) {
     }
   } catch (err){
     console.log(err);
-    return res.status(200).json({message: "Error: Server can't fetch book detail."});
+    return res.status(500).json({message: "Error: Server can't fetch book detail."});
   }
 });
 
@@ -110,7 +110,7 @@ public_users.get('/review/:isbn', async function (req, res) {
     }
   } catch (err){
     console.log(err);
-    return res.status(200).json({message: "Error: Server can't fetch book reviews."});
+    return res.status(500).json({message: "Error: Server can't fetch book reviews."});
   }
 });
 
