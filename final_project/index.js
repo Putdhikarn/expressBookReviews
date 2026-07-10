@@ -75,8 +75,11 @@ app.get("/dbacc/book/title/:title", async (req, res) => {
 // To Make Mark happy...
 // Mark REALLY want axios...
 app.get("/dbacc/book/review/:isbn", async (req, res) => {
-    const rw = books[req.params.isbn].reviews;
-    return res.status(200).json(rw);
+    const bk = books[req.params.isbn];
+    if (bk != null){
+        return res.status(200).json(bk.reviews);
+    }
+    return res.status(500).json({message: "Error: Can't get a review for a book with that ISBN number."});
 });
 
 app.listen(PORT,()=>console.log("Server is running"));
